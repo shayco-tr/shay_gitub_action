@@ -14,6 +14,14 @@ resource "azurerm_virtual_network" "vnet" {
     location            = var.location
     resource_group_name = azurerm_resource_group.rg.name
 }
+data "azurerm_key_vault" "shay-keyvault" {
+  name                = "shay-keyvault"
+  resource_group_name = "azurerm_resource_group.rg.name"
+}
+data "azurerm_key_vault_secret" "secret" {
+  name         = "sshKey"
+  key_vault_id = data.azurerm_key_vault.shay-keyvault.id
+}
 # create availability set
 resource "azurerm_availability_set" "avs" {
   name                = "${local.env_name}_avs"
@@ -74,8 +82,9 @@ resource "azurerm_virtual_machine" "vm" {
     os_profile_linux_config {
     disable_password_authentication = true
     ssh_keys {
-      key_data = file("/home/shay/.ssh/id_rsa.pub")
+      key_data = data.azurerm_key_vault_secret.secret.value
       path     = "/home/shay/.ssh/authorized_keys"
+      depends_on = [azurerm_key_vault_access_policy.access]
     }
   }
 }
