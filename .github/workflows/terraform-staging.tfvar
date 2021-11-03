@@ -1,0 +1,16 @@
+# system = "terraexample"
+#servername = "vmterraform"
+#location = "esatus"
+#vnet_name=shayvn
+env = "stage"
+admin_username = "shay"
+subnet = ["99.0.0.0/24","99.0.1.0/24"]
+vnet_address_space = "99.0.0.0/16"
+#vnet_address_space = ["15.0.0.0/24","15.0.1.0/24"]
+#subnet = ["15.0.0.0/24","15.0.1.0/24"]
+os = {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "16.04-LTS"
+    version   = "latest"
+}
