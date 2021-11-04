@@ -1,11 +1,15 @@
  variable "resource_group_name" {
     type = string
     description = "Name of the system or environment"
-    default = "shayvm"
+    default = "shayv"
 }
+#variable "subnet" {
+#    type = list(any)
+#    default = ["29.0.0.0/24", "29.0.1.0/24"] 
+#}
 variable "subnet" {
-    type = list(any)
-    default = ["29.0.0.0/24", "29.0.1.0/24"] 
+    type = string
+    default = "29.0.0.0/24"
 }
 variable "servername" {
     type = string
@@ -17,7 +21,6 @@ variable "location" {
     type = string
     description = "Azure location of terraform server environment"
     default = "eastus"
-
 }
 
 variable "admin_username" {
@@ -73,4 +76,17 @@ variable "prefix" {
 }
 variable "env" {
   type = string
+}
+variable whitelist_ips {
+  description = "A list of IP CIDR ranges to allow as clients. Do not use Azure tags like `Internet`."
+  default     = ["212.179.161.98/32" ,"34.99.159.243/32"]
+  type        = list(string)
+}
+variable scfile{
+    type = string
+    default = "/home/shay/Shay_projectIN/task6/jenkins.sh"
+}
+variable "hostname" {
+  type = string
+  default = "hostn"
 }
