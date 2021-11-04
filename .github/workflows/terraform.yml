@@ -4,8 +4,11 @@ on:
   push:
     branches:
     - terrform_task
+  paths:
+          - IaC/**
   pull_request:
-
+     branches:
+     - main
 jobs:
   terraform:
     name: 'Terraform'
@@ -39,4 +42,4 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -var-file=terraform-Production.tfvar
+      run: terraform plan --var-file=terraform-Production.tfvar
