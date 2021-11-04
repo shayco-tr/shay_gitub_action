@@ -5,15 +5,16 @@ on:
     branches:
     - terrform_task
   paths:
-          - IaC/**
+      - IaC
   pull_request:
+                  if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
      branches:
      - main
 jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
-    env:
+    env
       ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
       ARM_TENANT_ID: ${{ secrets.AZURE_TENANTID }}
@@ -24,12 +25,12 @@ jobs:
     defaults:
       run:
         shell: bash
-
+        working-directory: IaC
     steps:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v2
-
+      
     - uses: hashicorp/setup-terraform@v1
 
     - name: Terraform Init
@@ -43,3 +44,7 @@ jobs:
     - name: Terraform Plan
       id: plan
       run: terraform plan --var-file=terraform-Production.tfvar
+      run: terraform plan -out=plan
+         - name: Terraform apply
+      id: apply
+      run: terraform apply --var-file=terraform-Production.tfvar
