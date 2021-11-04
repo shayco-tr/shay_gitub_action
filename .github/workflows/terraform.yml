@@ -4,8 +4,8 @@ on:
   push:
     branches:
     - terrform_task
-  paths:
-      - IaC
+  #paths:
+      #- IaC
   pull_request:
      #branches:
      #- main
@@ -16,7 +16,7 @@ jobs:
   Terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
-    env
+    env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
       ARM_TENANT_ID: ${{ secrets.AZURE_TENANTID }}
