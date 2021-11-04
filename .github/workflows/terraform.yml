@@ -7,9 +7,11 @@ on:
   paths:
       - IaC
   pull_request:
-                  if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
      branches:
      - main
+      types: [closed]
+    if: github.event.pull_request.merged == true
+    run: terraform apply --var-file=terraform-Production.tfvar
 jobs:
   terraform:
     name: 'Terraform'
@@ -30,7 +32,7 @@ jobs:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v2
-      
+
     - uses: hashicorp/setup-terraform@v1
 
     - name: Terraform Init
@@ -45,6 +47,6 @@ jobs:
       id: plan
       run: terraform plan --var-file=terraform-Production.tfvar
       run: terraform plan -out=plan
-         - name: Terraform apply
+    - name: Terraform apply
       id: apply
       run: terraform apply --var-file=terraform-Production.tfvar
