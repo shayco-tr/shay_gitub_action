@@ -1,0 +1,52 @@
+name: 'Test1'
+
+on:
+  push:
+    branches:
+    - terrform_task
+  paths:
+      - IaC
+  pull_request:
+     branches:
+     - main
+      types: [closed]
+    if: github.event.pull_request.merged == true
+    run: terraform apply --var-file=terraform-Production.tfvar
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    env
+      ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANTID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTIONID }}
+
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: IaC
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - uses: hashicorp/setup-terraform@v1
+
+    - name: Terraform Init
+      id: init
+      run: terraform init
+
+    - name: Terraform Validate
+      id: validate
+      run: terraform validate
+
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan --var-file=terraform-Production.tfvar
+      run: terraform plan -out=plan
+    - name: Terraform apply
+      id: apply
+      run: terraform apply --var-file=terraform-Production.tfvar
