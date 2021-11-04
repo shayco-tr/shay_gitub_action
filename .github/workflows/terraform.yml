@@ -1,9 +1,9 @@
-name: 'Test1'
+name: 'shay_gitub_action'
 
 on:
   push:
     branches:
-    - main
+    - terrform_task
   pull_request:
 
 jobs:
