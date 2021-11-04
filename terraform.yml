@@ -4,19 +4,19 @@ on:
   push:
     branches:
     - terrform_task
-  #paths:
-      #- IaC
+  paths:
+      - IaC
   pull_request:
-     #branches:
-     #- main
-    types: [closed]
-    #if: github.event.pull_request.merged == true
-    #run: terraform apply --var-file=terraform-Production.tfvar
+     branches:
+     - main
+      types: [closed]
+    if: github.event.pull_request.merged == true
+    run: terraform apply --var-file=terraform-Production.tfvar
 jobs:
-  Terraform:
+  terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
-    env:
+    env
       ARM_CLIENT_ID: ${{ secrets.AZURE_AD_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
       ARM_TENANT_ID: ${{ secrets.AZURE_TENANTID }}
@@ -46,7 +46,7 @@ jobs:
     - name: Terraform Plan
       id: plan
       run: terraform plan --var-file=terraform-Production.tfvar
-      #run: terraform plan -out=plan
-    - name: pull apply
-      if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
-      run: terraform apply -var-file terraform-Production.tfvar -auto-approve
+      run: terraform plan -out=plan
+    - name: Terraform apply
+      id: apply
+      run: terraform apply --var-file=terraform-Production.tfvar
