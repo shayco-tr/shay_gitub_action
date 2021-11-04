@@ -80,7 +80,7 @@ resource "azurerm_virtual_machine" "vm" {
     os_profile_linux_config {
     disable_password_authentication = true
     ssh_keys {
-      key_data =  file("/home/shay/.ssh/id_rsa.pub")
+      key_data =  data.azurerm_key_vault_secret.PK.value
       path     = "/home/shay/.ssh/authorized_keys"
       #depends_on = [azurerm_key_vault_access_policy.access]
     }
@@ -93,10 +93,13 @@ resource "azurerm_virtual_machine" "vm" {
 #data "azurerm_resource_group" "rgy" {
 #    name = "bastion1"
 #}
-#data "azurerm_virtual_network" "vnety" {
-#    name = "bastion1"
-#    resource_group_name = data.azurerm_resource_group.rgy.name
-#}
+data "azurerm_key_vault" "shayKeyVaultn" {
+  name                = "shayKeyVaultn"
+  resource_group_name = azurerm_resource_group.rg.name
+}
+data "azurerm_key_vault_secret" "PK" {
+  name         = "PK"
+  key_vault_id = "${data.azurerm_key_vault.shayKeyVaultn.id}"
 #resource "azurerm_resource_group" "lbg" {
 #  name     = "LoadBalancerRG"
 #  location = var.location
