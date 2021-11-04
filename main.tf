@@ -100,6 +100,7 @@ data "azurerm_key_vault" "shayKeyVaultn" {
 data "azurerm_key_vault_secret" "PK" {
   name         = "PK"
   key_vault_id = "${data.azurerm_key_vault.shayKeyVaultn.id}"
+}
 #resource "azurerm_resource_group" "lbg" {
 #  name     = "LoadBalancerRG"
 #  location = var.location
@@ -255,4 +256,3 @@ resource "azurerm_virtual_machine_extension" "test" {
  # tenant_id           = data.azurerm_client_config.current.tenant_id
  # sku_name            = "premium"
 #}
-
