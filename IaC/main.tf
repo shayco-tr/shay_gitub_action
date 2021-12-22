@@ -3,12 +3,12 @@ locals{
 }
 #create resource group
 resource "azurerm_resource_group" "rg" { 
-    name     = "${local.env_name}_${var.resource_group_name}"
+    name     = "${terraform.workspace}_${var.resource_group_name}"
     location = var.location
 }
 #Create virtual network
 resource "azurerm_virtual_network" "vnet" {
-    name = "${local.env_name}_${var.resource_group_name}"
+    name = "${terraform.workspace}_${var.resource_group_name}"
     address_space      = var.vnet_address_space
     location            = var.location
     resource_group_name = azurerm_resource_group.rg.name
@@ -16,13 +16,13 @@ resource "azurerm_virtual_network" "vnet" {
 
 # create availability set
 resource "azurerm_availability_set" "avs" {
-  name                = "${local.env_name}_avs"
+  name                = "${terraform.workspace}_avs"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 }
 # Create subnet
 resource "azurerm_subnet" "subnet" {
-  name                 =  "${local.env_name}" 
+  name                 =  "${terraform.workspace}" 
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
    address_prefix  = var.subnet
