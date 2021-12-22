@@ -13,18 +13,7 @@ resource "azurerm_virtual_network" "vnet" {
     location            = var.location
     resource_group_name = azurerm_resource_group.rg.name
 }
-#data "azurerm_key_vault" "shay-keyvault" {
-#  name                = "shay-keyvault"
-#  resource_group_name = azurerm_resource_group.rg.name
-#}
-#data "azurerm_key_vault_secret" "secret" {
-#name         = "sshKey"
-#key_vault_id =  data.azurerm_key_vault.shay-keyvault.id
-#}
-#output "secret_value" {
- # value = data.azurerm_key_vault_secret.secret.value
- # sensitive = true
-#}
+
 # create availability set
 resource "azurerm_availability_set" "avs" {
   name                = "${local.env_name}_avs"
@@ -87,12 +76,7 @@ resource "azurerm_virtual_machine" "vm" {
   }
 }
 
-#data "azurerm_resource_group" "rgn" {
-#    name = "shayntnew"
-#}
-#data "azurerm_resource_group" "rgy" {
-#    name = "bastion1"
-#}
+
 data "azurerm_key_vault" "shayKeyVaultn" {
   name                = "shayKeyVaultn"
   resource_group_name = azurerm_resource_group.rg.name
@@ -101,10 +85,7 @@ data "azurerm_key_vault_secret" "PK" {
   name         = "PK"
   key_vault_id = "${data.azurerm_key_vault.shayKeyVaultn.id}"
 }
-#resource "azurerm_resource_group" "lbg" {
-#  name     = "LoadBalancerRG"
-#  location = var.location
-#}
+
 
 resource "azurerm_public_ip" "pi" {
   name                = "PublicIPForLB"
@@ -113,66 +94,7 @@ resource "azurerm_public_ip" "pi" {
   allocation_method   = "Static"
 }
 
-#resource "azurerm_lb" "lb" {
-#  name   = "TestLoadBalancer"
-#  location            = var.location
-#  resource_group_name = azurerm_resource_group.rg.name
-#  frontend_ip_configuration {
-#    name                 = "PublicIPAddress"
-#    public_ip_address_id = azurerm_public_ip.pi.id
-#  }
-#}
-#resource "azurerm_lb_backend_address_pool" "albap" {
-#  resource_group_name = azurerm_resource_group.rg.name
-#  loadbalancer_id     = azurerm_lb.lb.id
-#  name                = "acctestpool"
-#}
-#
-#resource "azurerm_network_interface_backend_address_pool_association" "ibdpa" {
-#  count = 2
-#  network_interface_id    = azurerm_network_interface.nic[count.index].id
-#  ip_configuration_name   = "test"
-#  backend_address_pool_id = azurerm_lb_backend_address_pool.albap.id
-#}
-#resource "azurerm_lb_rule" "lbrl" {
-# resource_group_name            = azurerm_resource_group.rg.name
-#  loadbalancer_id                = azurerm_lb.lb.id
-#  name                           = "LBRule"
-#  protocol                       = "Tcp"
-#  frontend_port                  = 8080
-#  backend_port                   = 8080
-#  frontend_ip_configuration_name = "PublicIPAddress"
-#    probe_id                     = azurerm_lb_probe.lbp.id
-#  backend_address_pool_id       =  azurerm_lb_backend_address_pool.albap.id
-#}
 
-#resource "azurerm_virtual_network_peering" "shay_peering_tobustion" {
-#  name                         = "shayvnetpe"
-#  resource_group_name          = azurerm_resource_group.rg.name
-#  virtual_network_name         = azurerm_virtual_network.vnet.name
-#  remote_virtual_network_id    = data.azurerm_virtual_network.vnety.id
-#  allow_virtual_network_access = true
-#  allow_forwarded_traffic      = true
-#  allow_gateway_transit = false
-#}
-#resource "azurerm_virtual_network_peering" "bastion_peering" {
-#  name                         = "shayvnetper"
-#  resource_group_name          = data.azurerm_resource_group.rgy.name
-#  virtual_network_name         = data.azurerm_virtual_network.vnety.name
-#  remote_virtual_network_id    = azurerm_virtual_network.vnet.id
-#  allow_virtual_network_access = true
-#  allow_forwarded_traffic      = true
-
-  # `allow_gateway_transit` must be set to false for vnet Global Peering
- # allow_gateway_transit = false
-#}
-
-#resource "azurerm_lb_probe" "lbp" {
-#  resource_group_name = azurerm_resource_group.rg.name
-#  loadbalancer_id     = azurerm_lb.lb.id
-#  name                = "http-running-probe"
-#  port                = 8080
-#}
  resource "azurerm_network_security_group" "nsg" {
    name                = "firewall"
    location            = var.location
@@ -188,28 +110,7 @@ resource "azurerm_public_ip" "pi" {
      source_address_prefixes      = var.whitelist_ips
      destination_address_prefix = "*"
    }
-#    security_rule {
- #    name                       = "git1"
- #    priority                   = 101
- #    direction                  = "Inbound"
- #    access                     = "Allow"
- #    protocol                   = "*"
- #    source_port_range          = "*"
- #    destination_port_range     = "8080"
- #    source_address_prefix      = "192.3:0.252.0/22"
- #    destination_address_prefix = "*"
- #}
-  #  security_rule {
-  #  name                       = "git2"
-  #   priority                   = 102
-  #   direction                  = "Inbound"
-  #   access                     = "Allow"
-  #   protocol                   = "Tcp"
-  #   source_port_range          = "*"
-  #   destination_port_range     = "8080"
-  #   source_address_prefix      = "140.82.112.0/20"
-  #   destination_address_prefix = "*"
- #}
+
     security_rule {
      name                       = "home"
      priority                   = 103
@@ -247,12 +148,4 @@ resource "azurerm_virtual_machine_extension" "test" {
    network_security_group_id = azurerm_network_security_group.nsg.id
     #depends_on                = [azurerm_network_security_group.nsg, azurerm_network_interface.nic]
  }
-#data "azurerm_client_config" "current" {}
 
-#resource "azurerm_key_vault" "shay-keyvault" {
-  #name                = "shay-keyvault"
- # location            = var.location
- # resource_group_name = azurerm_resource_group.rg.name
- # tenant_id           = data.azurerm_client_config.current.tenant_id
- # sku_name            = "premium"
-#}
